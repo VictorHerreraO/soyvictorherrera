@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+  <!-- JQUERY JS -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+    integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous">
+  </script>
+  <!-- Popper -->
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+    integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous">
+  </script>
+  <!-- Bootstrap -->
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
+    integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous">
+  </script>
+  <!-- ACE -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ace.js"
+    integrity="sha512-GZ1RIgZaSc8rnco/8CXfRdCpDxRCphenIiZ2ztLy3XQfCbQUSCuk8IudvNHxkRA3oUg6q0qejgN/qqyG1duv5Q=="
+    crossorigin="anonymous"></script>
+  <!-- JSON 2 Java -->
+  <script src="./json2java.js"></script>
+  <style type="text/css" media="screen">
+    body {
+      background-color: #353535;
+    }
+
+    #editor {
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+    }
+
+    #templates {
+      display: none;
+    }
+
+    #copyArea {
+      position: absolute;
+      opacity: .01;
+      height: 0;
+      overflow: hidden;
+    }
+  </style>
+  <title>Test</title>
+</head>
+
+<body class="container-fluid">
+  <div class="container">
+    <div class="card mt-5">
+      <div class="card-header">
+        <h4>Jent: Java entity generator</h4>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-7">
+            <div id="editor"></div>
+          </div>
+          <div class="col">
+            <div class="container">
+              <div class="row">
+                <div class="col">
+                  <form>
+                    <div class="form-group">
+                      <label for="classPackage">Nombre de paquete</label>
+                      <input type="email" class="form-control" id="classPackage" placeholder="com.test.package">
+                    </div>
+                    <div class="form-group">
+                      <label for="classPrefix">Prefijo</label>
+                      <input type="email" class="form-control" id="classPrefix">
+                    </div>
+                    <div class="form-group">
+                      <label for="className">Nombre de clase</label>
+                      <input type="email" class="form-control" id="className">
+                    </div>
+                    <hr />
+                    <label>Opciones</label>
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" value="" id="optionsEmptyConstructor"
+                        checked="true">
+                      <label class="form-check-label" for="optionsEmptyConstructor">
+                        Agregar constructor vacío
+                      </label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" value="" id="optionsUsePrimitives" checked="true">
+                      <label class="form-check-label" for="optionsUsePrimitives">
+                        Usar primitivos
+                      </label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" value="" id="optionsAddGetter" checked="true">
+                      <label class="form-check-label" for="optionsAddGetter">
+                        Generar Getters
+                      </label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" value="" id="optionsAddSetter" checked="true">
+                      <label class="form-check-label" for="optionsAddSetter">
+                        Generar Setters
+                      </label>
+                    </div>
+                    <hr />
+                  </form>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col">
+                  <div id="logger" class="alert alert-danger" role="alert" style="display: none;"></div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col text-right">
+                  <div class="btn-group" role="group" aria-label="Acciones">
+                    <button id="actionCopy" type="button" class="btn btn-light">Copiar JSON</button>
+                    <button id="actionPaste" type="button" class="btn btn-light">Pegar JSON</button>
+                    <button id="actionFormat" type="button" class="btn btn-light">Dar formato</button>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col text-right">
+                  <div class="btn-group mt-2" role="group" aria-label="Acciones">
+                    <button id="ationGenerate" type="button" class="btn btn-primary">Generar</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="resultsModal" tabindex="-1" data-backdrop="static" aria-labelledby="resultsModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="resultsModalLabel">Output</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body"></div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <textarea id="copyArea"></textarea>
+
+  <div id="templates">
+    <template id="fileCardTemplate">
+      <div class="card file-card mb-2">
+        <div class="card-header"></div>
+        <div class="card-body">
+          <textarea class="form-control file-source copy-source" rows="10"></textarea>
+        </div>
+        <div class="card-footer text-right">
+          <button type="button" class="btn btn-outline-primary copy-button">Copiar</button>
+        </div>
+      </div>
+    </template>
+  </div>
+</body>
+
+</html>
